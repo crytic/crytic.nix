@@ -35,6 +35,7 @@
           src = if src != null then src else builtins.fetchGit {
             url = "git+ssh://git@github.com/crytic/solc-select";
             rev = commitHash;
+            allRefs = true;
           };
           propagatedBuildInputs = with pyPkgs; [
             packaging
@@ -54,6 +55,7 @@
           src = if src != null then src else builtins.fetchGit {
             url = "git+ssh://git@github.com/crytic/crytic-compile";
             rev = commitHash;
+            allRefs = true;
           };
           propagatedBuildInputs = with pyPkgs; [
             solc-select
@@ -76,6 +78,7 @@
           src = if src != null then src else builtins.fetchGit {
             url = "git+ssh://git@github.com/crytic/slither";
             rev = commitHash;
+            allRefs = true;
           };
           propagatedBuildInputs = with pyPkgs; [
             solc-select
@@ -111,6 +114,7 @@
           src = if src != null then src else builtins.fetchGit {
             url = "git+ssh://git@github.com/crytic/cloudexec";
             rev = commitHash;
+            allRefs = true;
           };
           nativeBuildInputs = [
             pkgs.git
@@ -135,6 +139,7 @@
           src = if src != null then src else builtins.fetchGit {
             url = "git+ssh://git@github.com/crytic/medusa";
             rev = commitHash;
+            allRefs = true;
           };
           nativeBuildInputs = [
             crytic-compile
