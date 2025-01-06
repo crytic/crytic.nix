@@ -155,6 +155,7 @@
         }: pkgs.vscode-with-extensions.override {
           vscode = pkgs.vscodium;
           vscodeExtensions = with pkgs.vscode-extensions; extensions ++ [
+            jnoortheen.nix-ide
             mads-hartmann.bash-ide-vscode
             ms-python.python
             naumovs.color-highlight
