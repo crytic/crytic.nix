@@ -5,7 +5,7 @@
 
 Anyone with nix installed can run the following to use slither without installing anything globally; like a single-serving virtualenv. The first time this is run, it will take time as slither's dependencies (eg crytic-compile) are downloaded and the project is built, but subsequent runs will execute almost instantly without requiring any further downloads. More info re [nix run](https://determinate.systems/posts/nix-run/).
 
-`nix run git+ssh://git@github.com/crytic/crytic.nix#slither --help`
+`nix run git+ssh://git@github.com/crytic/crytic.nix#slither -- --help`
 
 You can use the following just command to install slither globally via your `nix profile`. This installation is hooked up to a new copy of required dependencies, so it'll take care of the `crytic-compile` dependency w/out any risk of conflict w an existing global crytic-compile installation.
 
