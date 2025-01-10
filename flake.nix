@@ -33,7 +33,7 @@
           pname = "solc-select";
           inherit version;
           src = if src != null then src else builtins.fetchGit {
-            url = "git+ssh://git@github.com/crytic/solc-select";
+            url = "https://github.com/crytic/solc-select";
             rev = commitHash;
             allRefs = true;
           };
@@ -53,7 +53,7 @@
           pname = "crytic-compile";
           inherit version;
           src = if src != null then src else builtins.fetchGit {
-            url = "git+ssh://git@github.com/crytic/crytic-compile";
+            url = "https://github.com/crytic/crytic-compile";
             rev = commitHash;
             allRefs = true;
           };
@@ -76,7 +76,7 @@
           pname = "slither";
           inherit version;
           src = if src != null then src else builtins.fetchGit {
-            url = "git+ssh://git@github.com/crytic/slither";
+            url = "https://github.com/crytic/slither";
             rev = commitHash;
             allRefs = true;
           };
@@ -112,7 +112,7 @@
           inherit version vendorHash;
           pname = "cloudexec";
           src = if src != null then src else builtins.fetchGit {
-            url = "git+ssh://git@github.com/crytic/cloudexec";
+            url = "https://github.com/crytic/cloudexec";
             rev = commitHash;
             allRefs = true;
           };
@@ -137,7 +137,7 @@
           pname = "medusa";
           inherit version vendorHash;
           src = if src != null then src else builtins.fetchGit {
-            url = "git+ssh://git@github.com/crytic/medusa";
+            url = "https://github.com/crytic/medusa";
             rev = commitHash;
             allRefs = true;
           };
