@@ -1,9 +1,18 @@
 
 # Crytic flake.nix
 
+## Getting Started
+
+Make sure nix is installed and that `nix-command` and `flakes` features are enabled. The [Determinate Systems nix-installer](https://determinate.systems/nix-installer/) will automatically enable these features and is the recommended approach. If nix is already installed without these features enabled, you can run the following commands to enable them.
+
+```
+mkdir -p ~/.config/nix
+echo 'experimental-features = nix-command flakes' > ~/.config/nix/nix.conf
+```
+
 ## Direct Usage
 
-Anyone with nix installed can run the following to use slither without installing anything globally; like a single-serving virtualenv. The first time this is run, it will take time as slither's dependencies (eg crytic-compile) are downloaded and the project is built, but subsequent runs will execute almost instantly without requiring any further downloads. More info re [nix run](https://determinate.systems/posts/nix-run/).
+Once you have nix installed, you can run the following to use slither without installing anything globally; like a single-serving virtualenv. The first time this is run, it will take time as slither's dependencies (eg crytic-compile) are downloaded and the project is built, but subsequent runs will execute almost instantly without requiring any further downloads. More info re [nix run](https://determinate.systems/posts/nix-run/).
 
 `nix run git+ssh://git@github.com/crytic/crytic.nix#slither -- --help`
 
