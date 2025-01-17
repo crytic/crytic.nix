@@ -44,8 +44,8 @@ Usage in an audit repo might look something like the following:
 ```nix
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/856556b164d56f63434d2dd3e954f00f4b3a075f"; # v24.05 on 240912
-    utils.url = "github:numtide/flake-utils/b1d9ab70662946ef0850d488da1c9019f3a9752a"; # main on 240311
+    nixpkgs.url = "github:nixos/nixpkgs";
+    utils.url = "github:numtide/flake-utils";
     foundry.url = "github:shazow/foundry.nix/monthly";
     crytic.url = "github:crytic/crytic.nix";
     crytic.inputs.nixpkgs.follows = "nixpkgs";

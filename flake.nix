@@ -133,6 +133,7 @@
           vendorHash ? "sha256-12Xkg5dzA83HQ2gMngXoLgu1c9KGSL6ly5Qz/o8U++8=",
           src ? null,
           crytic-compile ? packages.crytic-compile,
+          slither ? packages.slither,
         }: pkgs.buildGoModule {
           pname = "medusa";
           inherit version vendorHash;
@@ -143,6 +144,7 @@
           };
           nativeBuildInputs = [
             crytic-compile
+            slither
             pkgs.solc
             pkgs.nodejs
           ];
