@@ -72,9 +72,9 @@ Usage in an audit repo might look something like the following:
             crytic.packages.${system}.solc-select
             crytic-compile
             # use our custom version of crytic-compile in slither
-            crytic.lib.${system}.mkSlither {
+            (crytic.lib.${system}.mkSlither {
               inherit crytic-compile;
-            };
+            })
             crytic.packages.${system}.echidna
             crytic.packages.${system}.medusa
             (crytic.lib.${system}.mkVscode {
