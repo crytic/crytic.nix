@@ -2,8 +2,8 @@
   description = "Crytic Toolbox";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/856556b164d56f63434d2dd3e954f00f4b3a075f"; # v24.05 on 240912
-    utils.url = "github:numtide/flake-utils/b1d9ab70662946ef0850d488da1c9019f3a9752a"; # 240311
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    utils.url = "github:numtide/flake-utils/main";
   };
 
   outputs = inputs: with inputs;
@@ -16,7 +16,7 @@
       pyCommon = skipTests // {
         format = "pyproject";
         # Chill out re dependency versions
-        pythonRelaxDeps = true; nativeBuildInputs = with pyPkgs; [ pkgs.git pythonRelaxDepsHook ];
+        pythonRelaxDeps = true; nativeBuildInputs = with pyPkgs; [ pythonRelaxDepsHook ];
       };
       pkgs = import nixpkgs { inherit system; };
       noCheck = drv: drv.overridePythonAttrs (old: skipTests // old);
@@ -117,8 +117,7 @@
             allRefs = true;
           };
           nativeBuildInputs = [
-            pkgs.git
-            pkgs.go_1_21
+            pkgs.go_1_22
           ];
           ldflags = [
             "-X main.Version=${version}"
@@ -208,6 +207,7 @@
 
       devShells.default = pkgs.mkShell {
         buildInputs = with packages; [
+          pkgs.git
           cloudexec
           crytic-compile
           echidna
