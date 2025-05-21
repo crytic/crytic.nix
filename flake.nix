@@ -26,8 +26,8 @@
       lib = {
 
         mkSolcSelect = {
-          commitHash ? "8072a3394bdc960c0f652fb72e928a7eae3631da",
-          version ? "1.0.4",
+          commitHash ? "0ec2946474fed4523bf91cb1f11f0b75a3a4bc76",
+          version ? "1.1.0",
           src ? null,
         }: pyPkgs.buildPythonPackage (pyCommon // {
           pname = "solc-select";
@@ -45,8 +45,8 @@
         });
 
         mkCryticCompile = {
-          commitHash ? "20df04f37af723eaa7fa56dc2c80169776f3bc4d",
-          version ? "0.3.7",
+          commitHash ? "3c83210d8387e56535bde588b071fe1573ca494a",
+          version ? "0.3.10",
           src ? null,
           solc-select ? packages.solc-select,
         }: pyPkgs.buildPythonPackage (pyCommon // {
@@ -67,8 +67,8 @@
         });
 
         mkSlither = {
-          commitHash ? "aeeb2d368802844733671e35200b30b5f5bdcf5c",
-          version ? "0.10.4",
+          commitHash ? "f571b6b666d22045ae27dd1fc99024e3f951f1ee",
+          version ? "0.11.3",
           src ? null,
           solc-select ? packages.solc-select,
           crytic-compile ? packages.crytic-compile,
@@ -94,10 +94,9 @@
             pytest
             pytest-cov
             setuptools
+            web3
           ];
           postPatch = ''
-            echo "web3 dependency depends on ipfs which is bugged, removing it from the listed deps"
-            sed -i 's/"web3>=6.20.2, <7",//' setup.py
             echo "openai dependency is bugged, removing it from the listed deps"
             sed -i 's/"openai",//' setup.py
           '';
@@ -127,9 +126,9 @@
         };
 
         mkMedusa = {
-          commitHash ? "c58a72f2f9072c7b31d6a16f4771449e00607e4b",
-          version ? "0.1.8",
-          vendorHash ? "sha256-12Xkg5dzA83HQ2gMngXoLgu1c9KGSL6ly5Qz/o8U++8=",
+          commitHash ? "ef1f31d2ffacd5c5a120d42e6fb22b9ea76e0b99",
+          version ? "1.2.1",
+          vendorHash ? "sha256-utOYL3f4+cpTBHqeuWtd07K1ytLR5cUaZ1hsTEcjpBQ=",
           src ? null,
           crytic-compile ? packages.crytic-compile,
           slither ? packages.slither,
@@ -151,7 +150,7 @@
         };
 
         mkEchidna = {
-          commitHash ? "6d5ac38f9132938210c325d17fd6672543dfc9c4",
+          commitHash ? "aff20b7c643f7346c9b97de5e369cab303aa6eb3",
         }: (
           builtins.getFlake "github:crytic/echidna/${commitHash}"
         ).packages.${system}.echidna;
@@ -169,17 +168,17 @@
             hediet.vscode-drawio
             yzhang.markdown-all-in-one
           ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [{
-              name = "weaudit"; publisher = "trailofbits"; version = "1.1.0";
-              sha256 = "sha256-XHif6JzZJvQiToIn3mnBznp9ct8wlWOyBVncHU4ZDgo=";
+              name = "weaudit"; publisher = "trailofbits"; version = "1.2.1";
+              sha256 = "sha256-DZn+0ASrT+FxzN+jyMi6W1Dj2AOpbDzA7NBTlzhWM6w=";
             } {
-              name = "sarif-explorer"; publisher = "trailofbits"; version = "1.2.4";
-              sha256 = "sha256-BwJEapf0HRaUKHxA5V8QDAv3dEDGSxlE9a7dOnaN4h4=";
+              name = "sarif-explorer"; publisher = "trailofbits"; version = "1.2.9";
+              sha256 = "sha256-ilNPBW7MYzwm9vwbfnjrDQ0y4NGDFaz3uVt+NN/WDX4=";
             } {
               name = "flowbookmark"; publisher = "DeepakPahawa"; version = "5.0.0";
               sha256 = "sha256-iLMEZR3yT0Ua1TJxQlEFXe6RH+vaCF8h9JUjXY5EOjg=";
             } {
-              name = "solidity"; publisher = "juanblanco"; version = "0.0.174";
-              sha256 = "sha256-+fHycRl++Ate7NoQFaLmHynWNC+T4zjsPlFwvpnEMrk=";
+              name = "solidity"; publisher = "juanblanco"; version = "0.0.184";
+              sha256 = "sha256-2JFngoGb5MSPqr+DfIgmMckcjZtNPfSxnHJ31qQuyPU=";
             }
           ];
         };
