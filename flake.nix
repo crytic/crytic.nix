@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
-    utils.url = "github:numtide/flake-utils/main";
+    utils.url = "github:numtide/flake-utils";
   };
 
   outputs = inputs: with inputs;
@@ -145,7 +145,7 @@
             crytic-compile
             slither
             pkgs.solc
-            pkgs.nodejs
+            pkgs.nodejs_22
           ];
           doCheck = false; # tests require `npm install` which can't run in isolated build env
         };
@@ -166,6 +166,7 @@
             ms-python.python
             naumovs.color-highlight
             oderwat.indent-rainbow
+            hediet.vscode-drawio
             yzhang.markdown-all-in-one
           ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [{
               name = "weaudit"; publisher = "trailofbits"; version = "1.1.0";
