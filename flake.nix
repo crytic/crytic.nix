@@ -2,7 +2,7 @@
   description = "Crytic Toolbox";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     utils.url = "github:numtide/flake-utils";
   };
 
@@ -116,7 +116,7 @@
             allRefs = true;
           };
           nativeBuildInputs = [
-            pkgs.go_1_22
+            pkgs.go_1_23
           ];
           ldflags = [
             "-X main.Version=${version}"
@@ -206,16 +206,7 @@
       };
 
       devShells.default = pkgs.mkShell {
-        buildInputs = with packages; [
-          pkgs.git
-          cloudexec
-          crytic-compile
-          echidna
-          medusa
-          slither
-          solc-select
-          vscode
-        ];
+        buildInputs = [];
       };
 
     }
