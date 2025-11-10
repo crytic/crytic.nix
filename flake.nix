@@ -126,9 +126,9 @@
         };
 
         mkMedusa = {
-          commitHash ? "ef1f31d2ffacd5c5a120d42e6fb22b9ea76e0b99",
-          version ? "1.2.1",
-          vendorHash ? "sha256-utOYL3f4+cpTBHqeuWtd07K1ytLR5cUaZ1hsTEcjpBQ=",
+          commitHash ? "929651d9dae228c89035acc9cb7b3720577e565a",
+          version ? "1.3.1",
+          vendorHash ? "sha256-Tt7ZoEjurGSEmkqEsM04s3Nsny7YSH+DLwProdvwASY=",
           src ? null,
           crytic-compile ? packages.crytic-compile,
           slither ? packages.slither,
@@ -150,7 +150,7 @@
         };
 
         mkEchidna = {
-          commitHash ? "aff20b7c643f7346c9b97de5e369cab303aa6eb3",
+          commitHash ? "e871c88b08a906b513f820c93a77610a56ae00bb",
         }: (
           builtins.getFlake "github:crytic/echidna/${commitHash}"
         ).packages.${system}.echidna;
@@ -168,17 +168,17 @@
             hediet.vscode-drawio
             yzhang.markdown-all-in-one
           ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [{
-              name = "weaudit"; publisher = "trailofbits"; version = "1.2.1";
-              sha256 = "sha256-DZn+0ASrT+FxzN+jyMi6W1Dj2AOpbDzA7NBTlzhWM6w=";
+              name = "weaudit"; publisher = "trailofbits"; version = "1.3.1";
+              sha256 = "sha256-xmiJVrpX+b9FeSDxDEKoP1HhJsISvqX7wAmplOkLiG4=";
             } {
-              name = "sarif-explorer"; publisher = "trailofbits"; version = "1.2.9";
-              sha256 = "sha256-ilNPBW7MYzwm9vwbfnjrDQ0y4NGDFaz3uVt+NN/WDX4=";
+              name = "sarif-explorer"; publisher = "trailofbits"; version = "1.3.0";
+              sha256 = "sha256-e3iVk8M2B0WCJqpHc1Smcol5S6lP9GRRjNXAGwrN5ho=";
             } {
               name = "flowbookmark"; publisher = "DeepakPahawa"; version = "5.0.0";
               sha256 = "sha256-iLMEZR3yT0Ua1TJxQlEFXe6RH+vaCF8h9JUjXY5EOjg=";
             } {
-              name = "solidity"; publisher = "juanblanco"; version = "0.0.184";
-              sha256 = "sha256-2JFngoGb5MSPqr+DfIgmMckcjZtNPfSxnHJ31qQuyPU=";
+              name = "solidity"; publisher = "juanblanco"; version = "0.0.187";
+              sha256 = "sha256-O0VGLSBu7FJruCUlZjL6l+sTiXJjY0woz3sMqVzyFhs=";
             }
           ];
         };

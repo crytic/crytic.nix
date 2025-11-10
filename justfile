@@ -27,6 +27,3 @@ uninstall tool="slither":
 reinstall tool="slither":
   just uninstall {{tool}}
   just install {{tool}}
-
-code:
-  codium .
