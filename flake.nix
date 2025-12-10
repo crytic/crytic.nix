@@ -4,6 +4,8 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     utils.url = "github:numtide/flake-utils";
+    fenix.url = "github:nix-community/fenix";
+    fenix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs: with inputs;
@@ -20,6 +22,13 @@
       };
       pkgs = import nixpkgs { inherit system; };
       noCheck = drv: drv.overridePythonAttrs (old: skipTests // old);
+
+      fenixPkgs = fenix.packages.${system};
+      rustTools = with fenixPkgs; combine [
+        stable.completeToolchain
+        fenixPkgs.targets.x86_64-unknown-linux-gnu.stable.rust-std
+        fenixPkgs.targets.aarch64-unknown-linux-gnu.stable.rust-std
+      ];
 
     in rec {
 
@@ -155,6 +164,36 @@
           builtins.getFlake "github:crytic/echidna/${commitHash}"
         ).packages.${system}.echidna;
 
+        mkNecessist = {
+          commitHash ? "b95fc237129c9f96e77d552592ed2cedcb6a62aa",
+          version ? "2.1.2",
+          src_override ? null,
+        }: pkgs.rustPlatform.buildRustPackage rec {
+          pname = "necessist";
+          inherit version;
+          src = if src_override != null then src_override else builtins.fetchGit {
+            url = "https://github.com/trailofbits/necessist";
+            rev = commitHash;
+            allRefs = true;
+          };
+          cargoBuildFlags = "-p necessist";
+          cargoLock = {
+            lockFile = "${src}/Cargo.lock";
+          };
+          nativeBuildInputs = with pkgs; [
+            rustTools
+            pkg-config
+          ];
+          buildInputs = with pkgs; [
+            openssl
+            sqlite
+            curl
+          ];
+          OPENSSL_NO_VENDOR = 1;
+          PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
+          doCheck = false;
+        };
+
         mkVscode = {
           extensions ? [],
         }: pkgs.vscode-with-extensions.override {
@@ -192,6 +231,7 @@
         medusa = lib.mkMedusa {};
         slither = lib.mkSlither {};
         solc-select = lib.mkSolcSelect {};
+        roundme = lib.mkRoundme {};
         vscode = lib.mkVscode {};
       };
 
