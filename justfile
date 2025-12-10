@@ -9,6 +9,8 @@ build-all:
   just build crytic-compile
   just build echidna
   just build medusa
+  just build necessist
+  just build roundme
   just build slither
   just build solc-select
   just build vscode

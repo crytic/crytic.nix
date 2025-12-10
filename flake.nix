@@ -194,6 +194,35 @@
           doCheck = false;
         };
 
+        mkRoundme = {
+          commitHash ? "d7cab442befa336f9de10f7bf13de028261b328e",
+          version ? "0.1.0",
+          src_override ? null,
+        }: pkgs.rustPlatform.buildRustPackage rec {
+          pname = "roundme";
+          inherit version;
+          src = if src_override != null then src_override else builtins.fetchGit {
+            url = "https://github.com/crytic/roundme";
+            rev = commitHash;
+            allRefs = true;
+          };
+          cargoBuildFlags = "-p roundme";
+          cargoLock = {
+            lockFile = "${src}/Cargo.lock";
+          };
+          nativeBuildInputs = with pkgs; [
+            rustTools
+            pkg-config
+          ];
+          # buildInputs = with pkgs; [
+          #   openssl
+          #   curl
+          # ];
+          # OPENSSL_NO_VENDOR = 1;
+          PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
+          doCheck = false;
+        };
+
         mkVscode = {
           extensions ? [],
         }: pkgs.vscode-with-extensions.override {
@@ -231,6 +260,7 @@
         medusa = lib.mkMedusa {};
         slither = lib.mkSlither {};
         solc-select = lib.mkSolcSelect {};
+        necessist = lib.mkNecessist {};
         roundme = lib.mkRoundme {};
         vscode = lib.mkVscode {};
       };
