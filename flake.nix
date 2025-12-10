@@ -214,11 +214,6 @@
             rustTools
             pkg-config
           ];
-          # buildInputs = with pkgs; [
-          #   openssl
-          #   curl
-          # ];
-          # OPENSSL_NO_VENDOR = 1;
           PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
           doCheck = false;
         };
@@ -258,10 +253,10 @@
         crytic-compile = lib.mkCryticCompile {};
         echidna = lib.mkEchidna {};
         medusa = lib.mkMedusa {};
-        slither = lib.mkSlither {};
-        solc-select = lib.mkSolcSelect {};
         necessist = lib.mkNecessist {};
         roundme = lib.mkRoundme {};
+        slither = lib.mkSlither {};
+        solc-select = lib.mkSolcSelect {};
         vscode = lib.mkVscode {};
       };
 
@@ -270,13 +265,11 @@
         crytic-compile = { program = "${packages.crytic-compile}/bin/crytic-compile"; type = "app"; };
         echidna = { program = "${packages.echidna}/bin/echidna"; type = "app"; };
         medusa = { program = "${packages.medusa}/bin/medusa"; type = "app"; };
+        necessist = { program = "${packages.necessist}/bin/necessist"; type = "app"; };
+        roundme = { program = "${packages.roundme}/bin/roundme"; type = "app"; };
         slither = { program = "${packages.slither}/bin/slither"; type = "app"; };
         solc-select = { program = "${packages.solc-select}/bin/solc-select"; type = "app"; };
         vscode = { program = "${packages.vscode}/bin/vscode"; type = "app"; };
-      };
-
-      devShells.default = pkgs.mkShell {
-        buildInputs = [];
       };
 
     }
