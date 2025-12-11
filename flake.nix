@@ -135,9 +135,9 @@
         };
 
         mkMedusa = {
-          commitHash ? "929651d9dae228c89035acc9cb7b3720577e565a",
-          version ? "1.3.1",
-          vendorHash ? "sha256-Tt7ZoEjurGSEmkqEsM04s3Nsny7YSH+DLwProdvwASY=",
+          commitHash ? "3857153837ab90ed73adc484414b4b43703a54fb",
+          version ? "1.4.1",
+          vendorHash ? "sha256-4CZqAMbrXZ1kCG8oKrJ2Odq9rnRWsMXCvYGKp8T1QAs=",
           src ? null,
           crytic-compile ? packages.crytic-compile,
           slither ? packages.slither,
