@@ -14,6 +14,17 @@
       pyVersion = "python312";
       python = pkgs.${pyVersion};
       pyPkgs = pkgs.${pyVersion + "Packages"};
+      # Custom Python package set with overrides for problematic packages
+      pyPkgsCustom = pyPkgs.override {
+        overrides = self: super: {
+          # setproctitle tests segfault on macOS during fork tests
+          # See: https://github.com/dvarrazzo/py-setproctitle/issues/133
+          setproctitle = super.setproctitle.overridePythonAttrs (old: {
+            doCheck = false;
+            checkPhase = "true";
+          });
+        };
+      };
       skipTests = { doCheck = false; checkPhase = "true"; checkInputs = []; };
       pyCommon = skipTests // {
         format = "pyproject";
@@ -38,7 +49,7 @@
           commitHash ? "0ec2946474fed4523bf91cb1f11f0b75a3a4bc76",
           version ? "1.1.0",
           src ? null,
-        }: pyPkgs.buildPythonPackage (pyCommon // {
+        }: pyPkgsCustom.buildPythonPackage (pyCommon // {
           pname = "solc-select";
           inherit version;
           src = if src != null then src else builtins.fetchGit {
@@ -46,9 +57,10 @@
             rev = commitHash;
             allRefs = true;
           };
-          propagatedBuildInputs = with pyPkgs; [
+          propagatedBuildInputs = with pyPkgsCustom; [
             packaging
             pycryptodome
+            requests
             setuptools
           ];
         });
@@ -58,7 +70,7 @@
           version ? "0.3.10",
           src ? null,
           solc-select ? packages.solc-select,
-        }: pyPkgs.buildPythonPackage (pyCommon // {
+        }: pyPkgsCustom.buildPythonPackage (pyCommon // {
           pname = "crytic-compile";
           inherit version;
           src = if src != null then src else builtins.fetchGit {
@@ -66,7 +78,7 @@
             rev = commitHash;
             allRefs = true;
           };
-          propagatedBuildInputs = with pyPkgs; [
+          propagatedBuildInputs = with pyPkgsCustom; [
             solc-select
             cbor2
             pycryptodome
@@ -81,7 +93,7 @@
           src ? null,
           solc-select ? packages.solc-select,
           crytic-compile ? packages.crytic-compile,
-        }: pyPkgs.buildPythonPackage (pyCommon // {
+        }: pyPkgsCustom.buildPythonPackage (pyCommon // {
           pname = "slither";
           inherit version;
           src = if src != null then src else builtins.fetchGit {
@@ -89,7 +101,7 @@
             rev = commitHash;
             allRefs = true;
           };
-          propagatedBuildInputs = with pyPkgs; [
+          propagatedBuildInputs = with pyPkgsCustom; [
             solc-select
             crytic-compile
             deepdiff
