@@ -13,9 +13,8 @@
 
       pyVersion = "python312";
       python = pkgs.${pyVersion};
-      pyPkgs = pkgs.${pyVersion + "Packages"};
       # Custom Python package set with overrides for problematic packages
-      pyPkgsCustom = pyPkgs.override {
+      pyPkgs = pkgs.${pyVersion + "Packages"}.override {
         overrides = self: super: {
           # setproctitle tests segfault on macOS during fork tests
           # See: https://github.com/dvarrazzo/py-setproctitle/issues/133
@@ -49,7 +48,7 @@
           commitHash ? "00467c3de8f4d1b8aeb4d6fab54c8d7ea5573e67",
           version ? "1.2.0",
           src ? null,
-        }: pyPkgsCustom.buildPythonPackage (pyCommon // {
+        }: pyPkgs.buildPythonPackage (pyCommon // {
           pname = "solc-select";
           inherit version;
           src = if src != null then src else builtins.fetchGit {
@@ -57,7 +56,7 @@
             rev = commitHash;
             allRefs = true;
           };
-          propagatedBuildInputs = with pyPkgsCustom; [
+          propagatedBuildInputs = with pyPkgs; [
             packaging
             pycryptodome
             requests
@@ -70,7 +69,7 @@
           version ? "0.3.11",
           src ? null,
           solc-select ? packages.solc-select,
-        }: pyPkgsCustom.buildPythonPackage (pyCommon // {
+        }: pyPkgs.buildPythonPackage (pyCommon // {
           pname = "crytic-compile";
           inherit version;
           src = if src != null then src else builtins.fetchGit {
@@ -78,7 +77,7 @@
             rev = commitHash;
             allRefs = true;
           };
-          propagatedBuildInputs = with pyPkgsCustom; [
+          propagatedBuildInputs = with pyPkgs; [
             solc-select
             cbor2
             pycryptodome
@@ -93,7 +92,7 @@
           src ? null,
           solc-select ? packages.solc-select,
           crytic-compile ? packages.crytic-compile,
-        }: pyPkgsCustom.buildPythonPackage (pyCommon // {
+        }: pyPkgs.buildPythonPackage (pyCommon // {
           pname = "slither";
           inherit version;
           src = if src != null then src else builtins.fetchGit {
@@ -101,7 +100,7 @@
             rev = commitHash;
             allRefs = true;
           };
-          propagatedBuildInputs = with pyPkgsCustom; [
+          propagatedBuildInputs = with pyPkgs; [
             solc-select
             crytic-compile
             deepdiff
@@ -124,7 +123,7 @@
         });
 
         mkCloudexec = {
-          commitHash ? "cbba8d81e4b64f5d0634e728c339101a53d373cd",
+          commitHash ? "00a75cce9b6ab527798a7049c180acfb02a03f74",
           version ? "0.2.0",
           src ? null,
           vendorHash ? "sha256-xiiMcjo+hRllttjYXB3F2Ms2gX43r7/qgwxr4THNhsk=",
@@ -137,7 +136,7 @@
             allRefs = true;
           };
           nativeBuildInputs = [
-            pkgs.go_1_23
+            pkgs.go
           ];
           ldflags = [
             "-X main.Version=${version}"
@@ -171,13 +170,13 @@
         };
 
         mkEchidna = {
-          commitHash ? "e871c88b08a906b513f820c93a77610a56ae00bb",
+          commitHash ? "e4be047c31d6b9a0a493b9f0bd7b2ac96c014655",
         }: (
           builtins.getFlake "github:crytic/echidna/${commitHash}"
         ).packages.${system}.echidna;
 
         mkNecessist = {
-          commitHash ? "b95fc237129c9f96e77d552592ed2cedcb6a62aa",
+          commitHash ? "2ec8e679ce1443224ea324718788258cb0e19d61",
           version ? "2.1.2",
           src_override ? null,
         }: pkgs.rustPlatform.buildRustPackage rec {
@@ -207,7 +206,7 @@
         };
 
         mkRoundme = {
-          commitHash ? "d7cab442befa336f9de10f7bf13de028261b328e",
+          commitHash ? "95a61b71fac3bc21a26abc1b0b4fa29ab8f789a3",
           version ? "0.1.0",
           src_override ? null,
         }: pkgs.rustPlatform.buildRustPackage rec {
