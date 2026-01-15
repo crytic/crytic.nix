@@ -46,8 +46,8 @@
       lib = {
 
         mkSolcSelect = {
-          commitHash ? "0ec2946474fed4523bf91cb1f11f0b75a3a4bc76",
-          version ? "1.1.0",
+          commitHash ? "00467c3de8f4d1b8aeb4d6fab54c8d7ea5573e67",
+          version ? "1.2.0",
           src ? null,
         }: pyPkgsCustom.buildPythonPackage (pyCommon // {
           pname = "solc-select";
