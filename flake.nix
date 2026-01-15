@@ -66,8 +66,8 @@
         });
 
         mkCryticCompile = {
-          commitHash ? "3c83210d8387e56535bde588b071fe1573ca494a",
-          version ? "0.3.10",
+          commitHash ? "46ab5fda85dc967c0896720c0c3d744bb588f8c3",
+          version ? "0.3.11",
           src ? null,
           solc-select ? packages.solc-select,
         }: pyPkgsCustom.buildPythonPackage (pyCommon // {
