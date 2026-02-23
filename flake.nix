@@ -160,9 +160,11 @@
         };
 
         mkMedusa = {
-          commitHash ? "3857153837ab90ed73adc484414b4b43703a54fb",
-          version ? "1.4.1",
-          vendorHash ? "sha256-4CZqAMbrXZ1kCG8oKrJ2Odq9rnRWsMXCvYGKp8T1QAs=",
+          # latest commit from https://github.com/crytic/medusa/commits/master/
+          commitHash ? "1f322bd1eed610d90b43d8882db4d60d6ad03bae",
+          # latest version from https://github.com/crytic/medusa/releases
+          version ? "1.5.0",
+          vendorHash ? "sha256-r4p49cnObkugiEvGZx6bgXhjMbS5tMdfJsAJ7KzWW10=",
           src ? null,
           crytic-compile ? packages.crytic-compile,
           slither ? packages.slither,
