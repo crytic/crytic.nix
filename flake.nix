@@ -186,7 +186,9 @@
         };
 
         mkEchidna = {
-          commitHash ? "e4be047c31d6b9a0a493b9f0bd7b2ac96c014655",
+          # latest commit from https://github.com/crytic/echidna/commits/master/
+          commitHash ? "f946d3638eab3fa3bcb75d7f6cf5e08a2f1c63b6",
+          # version set by upstream flake.nix
         }: (
           builtins.getFlake "github:crytic/echidna/${commitHash}"
         ).packages.${system}.echidna;
