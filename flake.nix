@@ -94,8 +94,10 @@
         });
 
         mkSlither = {
-          commitHash ? "f571b6b666d22045ae27dd1fc99024e3f951f1ee",
-          version ? "0.11.3",
+          # latest commit from https://github.com/crytic/slither/commits/master/
+          commitHash ? "675c4468eb6637fd04ea4cd865faeb6425e243b4",
+          # latest version from https://github.com/crytic/slither/releases
+          version ? "0.11.5",
           src ? null,
           solc-select ? packages.solc-select,
           crytic-compile ? packages.crytic-compile,
@@ -107,6 +109,9 @@
             rev = commitHash;
             allRefs = true;
           };
+          nativeBuildInputs = (pyCommon.nativeBuildInputs or []) ++ (with pyPkgs; [
+            hatchling
+          ]);
           propagatedBuildInputs = with pyPkgs; [
             solc-select
             crytic-compile
@@ -125,7 +130,7 @@
           ];
           postPatch = ''
             echo "openai dependency is bugged, removing it from the listed deps"
-            sed -i 's/"openai",//' setup.py
+            sed -i 's/"openai",//' pyproject.toml
           '';
         });
 
