@@ -45,7 +45,9 @@
       lib = {
 
         mkSolcSelect = {
-          commitHash ? "00467c3de8f4d1b8aeb4d6fab54c8d7ea5573e67",
+          # latest commit from https://github.com/crytic/solc-select/commits/master/
+          commitHash ? "eb64a7aae8cfee8df87fafd0e304b57b703bd48d",
+          # latest version from https://github.com/crytic/solc-select/releases
           version ? "1.2.0",
           src ? null,
         }: pyPkgs.buildPythonPackage (pyCommon // {
@@ -65,7 +67,9 @@
         });
 
         mkCryticCompile = {
-          commitHash ? "46ab5fda85dc967c0896720c0c3d744bb588f8c3",
+          # latest commit from https://github.com/crytic/crytic-compile/commits/master
+          commitHash ? "08ee45443f7a661a3087d1b17502739d123ac0f9",
+          # latest version from https://github.com/crytic/crytic-compile/commits/master/
           version ? "0.3.11",
           src ? null,
           solc-select ? packages.solc-select,
@@ -77,6 +81,9 @@
             rev = commitHash;
             allRefs = true;
           };
+          nativeBuildInputs = (pyCommon.nativeBuildInputs or []) ++ (with pyPkgs; [
+            uv-build
+          ]);
           propagatedBuildInputs = with pyPkgs; [
             solc-select
             cbor2
@@ -123,7 +130,9 @@
         });
 
         mkCloudexec = {
-          commitHash ? "00a75cce9b6ab527798a7049c180acfb02a03f74",
+          # latest commit from https://github.com/crytic/cloudexec/commits/main/
+          commitHash ? "414f793e5b309611362ea2e1704836f94c2e397c",
+          # latest version from https://github.com/crytic/cloudexec/releases
           version ? "0.2.0",
           src ? null,
           vendorHash ? "sha256-xiiMcjo+hRllttjYXB3F2Ms2gX43r7/qgwxr4THNhsk=",
@@ -176,20 +185,24 @@
         ).packages.${system}.echidna;
 
         mkNecessist = {
-          commitHash ? "2ec8e679ce1443224ea324718788258cb0e19d61",
+          # latest commit from https://github.com/trailofbits/necessist/commits/master/
+          commitHash ? "27a28a4fe5ed7029ff98929b432a52a690196586",
+          # latest version from https://github.com/trailofbits/necessist/releases
           version ? "2.1.2",
-          src_override ? null,
-        }: pkgs.rustPlatform.buildRustPackage rec {
-          pname = "necessist";
-          inherit version;
-          src = if src_override != null then src_override else builtins.fetchGit {
+          src ? null,
+        }: let
+          effectiveSrc = if src != null then src else builtins.fetchGit {
             url = "https://github.com/trailofbits/necessist";
             rev = commitHash;
             allRefs = true;
           };
+        in pkgs.rustPlatform.buildRustPackage {
+          pname = "necessist";
+          inherit version;
+          src = effectiveSrc;
           cargoBuildFlags = "-p necessist";
           cargoLock = {
-            lockFile = "${src}/Cargo.lock";
+            lockFile = "${effectiveSrc}/Cargo.lock";
           };
           nativeBuildInputs = with pkgs; [
             rustTools
@@ -206,20 +219,24 @@
         };
 
         mkRoundme = {
-          commitHash ? "95a61b71fac3bc21a26abc1b0b4fa29ab8f789a3",
+          # latest commit from https://github.com/crytic/roundme/commits/main/
+          commitHash ? "d7cab442befa336f9de10f7bf13de028261b328e",
+          # latest version from https://github.com/crytic/roundme/releases
           version ? "0.1.0",
-          src_override ? null,
-        }: pkgs.rustPlatform.buildRustPackage rec {
-          pname = "roundme";
-          inherit version;
-          src = if src_override != null then src_override else builtins.fetchGit {
+          src ? null,
+        }: let
+          effectiveSrc = if src != null then src else builtins.fetchGit {
             url = "https://github.com/crytic/roundme";
             rev = commitHash;
             allRefs = true;
           };
+        in pkgs.rustPlatform.buildRustPackage {
+          pname = "roundme";
+          inherit version;
+          src = effectiveSrc;
           cargoBuildFlags = "-p roundme";
           cargoLock = {
-            lockFile = "${src}/Cargo.lock";
+            lockFile = "${effectiveSrc}/Cargo.lock";
           };
           nativeBuildInputs = with pkgs; [
             rustTools
@@ -242,15 +259,19 @@
             hediet.vscode-drawio
             yzhang.markdown-all-in-one
           ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [{
+              # latest version from https://marketplace.visualstudio.com/items?itemName=trailofbits.weaudit
               name = "weaudit"; publisher = "trailofbits"; version = "1.3.1";
               sha256 = "sha256-xmiJVrpX+b9FeSDxDEKoP1HhJsISvqX7wAmplOkLiG4=";
             } {
+              # latest version from https://marketplace.visualstudio.com/items?itemName=trailofbits.sarif-explorer
               name = "sarif-explorer"; publisher = "trailofbits"; version = "1.3.0";
               sha256 = "sha256-e3iVk8M2B0WCJqpHc1Smcol5S6lP9GRRjNXAGwrN5ho=";
             } {
+              # latest version from https://marketplace.visualstudio.com/items?itemName=DeepakPahawa.flowbookmark
               name = "flowbookmark"; publisher = "DeepakPahawa"; version = "5.0.0";
               sha256 = "sha256-iLMEZR3yT0Ua1TJxQlEFXe6RH+vaCF8h9JUjXY5EOjg=";
             } {
+              # latest version from https://marketplace.visualstudio.com/items?itemName=JuanBlanco.solidity
               name = "solidity"; publisher = "juanblanco"; version = "0.0.187";
               sha256 = "sha256-O0VGLSBu7FJruCUlZjL6l+sTiXJjY0woz3sMqVzyFhs=";
             }
