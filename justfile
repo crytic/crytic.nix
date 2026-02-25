@@ -11,6 +11,8 @@ build-all:
   just build cloudexec
   just build echidna
   just build medusa
+  just build mewt
+  just build muton
   just build necessist
   just build roundme
   just build vscode

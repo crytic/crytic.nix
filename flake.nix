@@ -193,6 +193,24 @@
           builtins.getFlake "github:crytic/echidna/${commitHash}"
         ).packages.${system}.echidna;
 
+        mkMewt = {
+          # latest commit from https://github.com/trailofbits/mewt/commits/main/
+          commitHash ? "f21bab01bf5ab6b5b95572b67af0e78c8c82a363",
+          # latest version from https://github.com/trailofbits/mewt/tags
+          version ? "2.0.1",
+        }: (
+          builtins.getFlake "github:trailofbits/mewt/${commitHash}"
+        ).packages.${system}.mewt;
+
+        mkMuton = {
+          # latest commit from https://github.com/trailofbits/muton/commits/main/
+          commitHash ? "9f1a48aeafc1e866c2d68cf9e1f2e00d2424d24d",
+          # latest version from https://github.com/trailofbits/muton/tags
+          version ? "2.0.1",
+        }: (
+          builtins.getFlake "github:trailofbits/muton/${commitHash}"
+        ).packages.${system}.muton;
+
         mkNecessist = {
           # latest commit from https://github.com/trailofbits/necessist/commits/master/
           commitHash ? "27a28a4fe5ed7029ff98929b432a52a690196586",
@@ -294,6 +312,8 @@
         crytic-compile = lib.mkCryticCompile {};
         echidna = lib.mkEchidna {};
         medusa = lib.mkMedusa {};
+        mewt = lib.mkMewt {};
+        muton = lib.mkMuton {};
         necessist = lib.mkNecessist {};
         roundme = lib.mkRoundme {};
         slither = lib.mkSlither {};
@@ -306,6 +326,8 @@
         crytic-compile = { program = "${packages.crytic-compile}/bin/crytic-compile"; type = "app"; };
         echidna = { program = "${packages.echidna}/bin/echidna"; type = "app"; };
         medusa = { program = "${packages.medusa}/bin/medusa"; type = "app"; };
+        mewt = { program = "${packages.mewt}/bin/mewt"; type = "app"; };
+        muton = { program = "${packages.muton}/bin/muton"; type = "app"; };
         necessist = { program = "${packages.necessist}/bin/necessist"; type = "app"; };
         roundme = { program = "${packages.roundme}/bin/roundme"; type = "app"; };
         slither = { program = "${packages.slither}/bin/slither"; type = "app"; };
