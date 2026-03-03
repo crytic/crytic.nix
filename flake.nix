@@ -45,8 +45,8 @@
       lib = {
 
         mkSolcSelect = {
-          # latest commit from https://github.com/crytic/solc-select/commits/master/
-          commitHash ? "eb64a7aae8cfee8df87fafd0e304b57b703bd48d",
+          # latest commit from https://github.com/crytic/solc-select/commits/dev/
+          commitHash ? "fd23f4e67b64a887bd636e5958096945aff3b114",
           # latest version from https://github.com/crytic/solc-select/releases
           version ? "1.2.0",
           src ? null,
@@ -195,7 +195,7 @@
 
         mkMewt = {
           # latest commit from https://github.com/trailofbits/mewt/commits/main/
-          commitHash ? "f21bab01bf5ab6b5b95572b67af0e78c8c82a363",
+          commitHash ? "9f5d006935da83cca6daa58598d1f680f623a55f",
           # latest version from https://github.com/trailofbits/mewt/tags
           version ? "2.0.1",
         }: (
@@ -204,7 +204,7 @@
 
         mkMuton = {
           # latest commit from https://github.com/trailofbits/muton/commits/main/
-          commitHash ? "9f1a48aeafc1e866c2d68cf9e1f2e00d2424d24d",
+          commitHash ? "55ea37175d5f450c5af4cec00ab5662b4a0e0912",
           # latest version from https://github.com/trailofbits/muton/tags
           version ? "2.0.1",
         }: (
