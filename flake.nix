@@ -45,8 +45,8 @@
       lib = {
 
         mkSolcSelect = {
-          # latest commit from https://github.com/crytic/solc-select/commits/dev/
-          commitHash ? "fd23f4e67b64a887bd636e5958096945aff3b114",
+          # latest release tag from https://github.com/crytic/solc-select/releases
+          commitHash ? "00467c3de8f4d1b8aeb4d6fab54c8d7ea5573e67",
           # latest version from https://github.com/crytic/solc-select/releases
           version ? "1.2.0",
           src ? null,
@@ -67,9 +67,9 @@
         });
 
         mkCryticCompile = {
-          # latest commit from https://github.com/crytic/crytic-compile/commits/master
-          commitHash ? "08ee45443f7a661a3087d1b17502739d123ac0f9",
-          # latest version from https://github.com/crytic/crytic-compile/commits/master/
+          # latest release tag from https://github.com/crytic/crytic-compile/releases
+          commitHash ? "46ab5fda85dc967c0896720c0c3d744bb588f8c3",
+          # latest version from https://github.com/crytic/crytic-compile/releases
           version ? "0.3.11",
           src ? null,
           solc-select ? packages.solc-select,
@@ -94,8 +94,8 @@
         });
 
         mkSlither = {
-          # latest commit from https://github.com/crytic/slither/commits/master/
-          commitHash ? "675c4468eb6637fd04ea4cd865faeb6425e243b4",
+          # latest release tag from https://github.com/crytic/slither/releases
+          commitHash ? "3b6811f0e0b2a3107d4a3938dd67f300b72f472c",
           # latest version from https://github.com/crytic/slither/releases
           version ? "0.11.5",
           src ? null,
@@ -135,8 +135,8 @@
         });
 
         mkCloudexec = {
-          # latest commit from https://github.com/crytic/cloudexec/commits/main/
-          commitHash ? "414f793e5b309611362ea2e1704836f94c2e397c",
+          # latest release tag from https://github.com/crytic/cloudexec/releases
+          commitHash ? "cbba8d81e4b64f5d0634e728c339101a53d373cd",
           # latest version from https://github.com/crytic/cloudexec/releases
           version ? "0.2.0",
           src ? null,
@@ -160,10 +160,10 @@
         };
 
         mkMedusa = {
-          # latest commit from https://github.com/crytic/medusa/commits/master/
-          commitHash ? "1f322bd1eed610d90b43d8882db4d60d6ad03bae",
+          # latest release tag from https://github.com/crytic/medusa/releases
+          commitHash ? "540a483b7a2a35b0a6d210aeb6ae6015aa7a0f62",
           # latest version from https://github.com/crytic/medusa/releases
-          version ? "1.5.0",
+          version ? "1.5.1",
           vendorHash ? "sha256-r4p49cnObkugiEvGZx6bgXhjMbS5tMdfJsAJ7KzWW10=",
           src ? null,
           crytic-compile ? packages.crytic-compile,
@@ -186,36 +186,36 @@
         };
 
         mkEchidna = {
-          # latest commit from https://github.com/crytic/echidna/commits/master/
-          commitHash ? "f946d3638eab3fa3bcb75d7f6cf5e08a2f1c63b6",
+          # latest release tag from https://github.com/crytic/echidna/releases
+          commitHash ? "7cbb32f3ff558d8e0b6e249c199831915c971d76",
           # version set by upstream flake.nix
         }: (
           builtins.getFlake "github:crytic/echidna/${commitHash}"
         ).packages.${system}.echidna;
 
         mkMewt = {
-          # latest commit from https://github.com/trailofbits/mewt/commits/main/
-          commitHash ? "9f5d006935da83cca6daa58598d1f680f623a55f",
-          # latest version from https://github.com/trailofbits/mewt/tags
-          version ? "2.0.1",
+          # latest release tag from https://github.com/trailofbits/mewt/releases
+          commitHash ? "e545284d2d8914f83d40b67882ed104ae073c555",
+          # latest version from https://github.com/trailofbits/mewt/releases
+          version ? "3.1.0",
         }: (
           builtins.getFlake "github:trailofbits/mewt/${commitHash}"
         ).packages.${system}.mewt;
 
         mkMuton = {
-          # latest commit from https://github.com/trailofbits/muton/commits/main/
-          commitHash ? "55ea37175d5f450c5af4cec00ab5662b4a0e0912",
-          # latest version from https://github.com/trailofbits/muton/tags
-          version ? "2.0.1",
+          # latest release tag from https://github.com/trailofbits/muton/releases
+          commitHash ? "00b4aca72b7cc81f0961b0a9536109342410294f",
+          # latest version from https://github.com/trailofbits/muton/releases
+          version ? "3.1.0",
         }: (
           builtins.getFlake "github:trailofbits/muton/${commitHash}"
         ).packages.${system}.muton;
 
         mkNecessist = {
-          # latest commit from https://github.com/trailofbits/necessist/commits/master/
-          commitHash ? "27a28a4fe5ed7029ff98929b432a52a690196586",
+          # latest release tag from https://github.com/trailofbits/necessist/releases
+          commitHash ? "069949411dddbf2380308fc6688be560144f9140",
           # latest version from https://github.com/trailofbits/necessist/releases
-          version ? "2.1.2",
+          version ? "2.2.0",
           src ? null,
         }: let
           effectiveSrc = if src != null then src else builtins.fetchGit {
@@ -246,8 +246,8 @@
         };
 
         mkRoundme = {
-          # latest commit from https://github.com/crytic/roundme/commits/main/
-          commitHash ? "d7cab442befa336f9de10f7bf13de028261b328e",
+          # latest release tag from https://github.com/crytic/roundme/releases
+          commitHash ? "95a61b71fac3bc21a26abc1b0b4fa29ab8f789a3",
           # latest version from https://github.com/crytic/roundme/releases
           version ? "0.1.0",
           src ? null,
