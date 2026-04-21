@@ -31,3 +31,6 @@ uninstall tool="slither":
 reinstall tool="slither":
   just uninstall {{tool}}
   just install {{tool}}
+
+update:
+  python3 scripts/update_tool_pins.py --apply --verify

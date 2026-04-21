@@ -1,0 +1,43 @@
+{
+  "defaults": {
+    "provider": "github",
+    "strategy": "release_latest",
+    "allow_prerelease": false,
+    "update_version": true,
+    "version_from_tag": "strip-v",
+    "fallback_to_tags": true
+  },
+  "tools": {
+    "mkSolcSelect": {
+      "repo": "crytic/solc-select"
+    },
+    "mkCryticCompile": {
+      "repo": "crytic/crytic-compile"
+    },
+    "mkSlither": {
+      "repo": "crytic/slither"
+    },
+    "mkCloudexec": {
+      "repo": "crytic/cloudexec"
+    },
+    "mkMedusa": {
+      "repo": "crytic/medusa"
+    },
+    "mkEchidna": {
+      "repo": "crytic/echidna",
+      "update_version": false
+    },
+    "mkMewt": {
+      "repo": "trailofbits/mewt"
+    },
+    "mkMuton": {
+      "repo": "trailofbits/muton"
+    },
+    "mkNecessist": {
+      "repo": "trailofbits/necessist"
+    },
+    "mkRoundme": {
+      "repo": "crytic/roundme"
+    }
+  }
+}

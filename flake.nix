@@ -335,6 +335,14 @@
         vscode = { program = "${packages.vscode}/bin/vscode"; type = "app"; };
       };
 
+      devShells.default = pkgs.mkShell {
+        packages = with pkgs; [
+          python3
+          git
+          just
+        ];
+      };
+
     }
   );
 }
