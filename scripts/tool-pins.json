@@ -1,15 +1,16 @@
 {
   "defaults": {
-    "provider": "github",
-    "strategy": "release_latest",
     "allow_prerelease": false,
+    "fallback_to_tags": true,
     "update_version": true,
-    "version_from_tag": "strip-v",
-    "fallback_to_tags": true
+    "commit_strategy": "release_latest",
+    "version_strategy": "release_latest"
   },
   "tools": {
     "mkSolcSelect": {
-      "repo": "crytic/solc-select"
+      "repo": "crytic/solc-select",
+      "commit_strategy": "branch_head",
+      "branch": "dev"
     },
     "mkCryticCompile": {
       "repo": "crytic/crytic-compile"

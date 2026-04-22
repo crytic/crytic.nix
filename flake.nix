@@ -45,8 +45,8 @@
       lib = {
 
         mkSolcSelect = {
-          # latest release tag from https://github.com/crytic/solc-select/releases
-          commitHash ? "00467c3de8f4d1b8aeb4d6fab54c8d7ea5573e67",
+          # latest commit from https://github.com/crytic/solc-select/commits/dev/
+          commitHash ? "edcbd33b2640366b6358a99e53436089299170e8",
           # latest version from https://github.com/crytic/solc-select/releases
           version ? "1.2.0",
           src ? null,
@@ -67,8 +67,8 @@
         });
 
         mkCryticCompile = {
-          # latest release tag from https://github.com/crytic/crytic-compile/releases
-          commitHash ? "46ab5fda85dc967c0896720c0c3d744bb588f8c3",
+          # latest commit from https://github.com/crytic/crytic-compile/commits/master/
+          commitHash ? "19934aa5b10837590b4ee1396a9266d0abd3ed8a",
           # latest version from https://github.com/crytic/crytic-compile/releases
           version ? "0.3.11",
           src ? null,
@@ -135,8 +135,8 @@
         });
 
         mkCloudexec = {
-          # latest release tag from https://github.com/crytic/cloudexec/releases
-          commitHash ? "cbba8d81e4b64f5d0634e728c339101a53d373cd",
+          # latest commit from https://github.com/crytic/cloudexec/commits/main/
+          commitHash ? "414f793e5b309611362ea2e1704836f94c2e397c",
           # latest version from https://github.com/crytic/cloudexec/releases
           version ? "0.2.0",
           src ? null,
@@ -212,8 +212,8 @@
         ).packages.${system}.muton;
 
         mkNecessist = {
-          # latest release tag from https://github.com/trailofbits/necessist/releases
-          commitHash ? "069949411dddbf2380308fc6688be560144f9140",
+          # latest commit from https://github.com/trailofbits/necessist/commits/main/
+          commitHash ? "b5f56d05522f8c237ec03a9776555e5f185ba7ff",
           # latest version from https://github.com/trailofbits/necessist/releases
           version ? "2.2.0",
           src ? null,
@@ -246,8 +246,8 @@
         };
 
         mkRoundme = {
-          # latest release tag from https://github.com/crytic/roundme/releases
-          commitHash ? "95a61b71fac3bc21a26abc1b0b4fa29ab8f789a3",
+          # latest commit from https://github.com/crytic/roundme/commits/main/
+          commitHash ? "d7cab442befa336f9de10f7bf13de028261b328e",
           # latest version from https://github.com/crytic/roundme/releases
           version ? "0.1.0",
           src ? null,
