@@ -10,13 +10,16 @@
     "mkSolcSelect": {
       "repo": "crytic/solc-select",
       "commit_strategy": "branch_head",
-      "branch": "dev"
+      "branch": "dev",
+      "update_version": false
     },
     "mkCryticCompile": {
-      "repo": "crytic/crytic-compile"
+      "repo": "crytic/crytic-compile",
+      "update_version": false
     },
     "mkSlither": {
-      "repo": "crytic/slither"
+      "repo": "crytic/slither",
+      "update_version": false
     },
     "mkCloudexec": {
       "repo": "crytic/cloudexec"

@@ -6,32 +6,31 @@
     utils.url = "github:numtide/flake-utils";
     fenix.url = "github:nix-community/fenix";
     fenix.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Keep these aligned with tob.nix so downstream flakes can share the same
+    # uv/pyproject packaging stack without redeclaring pins.
+    pyproject-nix = {
+      url = "github:pyproject-nix/pyproject.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    uv2nix = {
+      url = "github:pyproject-nix/uv2nix";
+      inputs.pyproject-nix.follows = "pyproject-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    pyproject-build-systems = {
+      url = "github:pyproject-nix/build-system-pkgs";
+      inputs.pyproject-nix.follows = "pyproject-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs: with inputs;
     utils.lib.eachDefaultSystem (system: let
 
-      pyVersion = "python312";
-      python = pkgs.${pyVersion};
-      # Custom Python package set with overrides for problematic packages
-      pyPkgs = pkgs.${pyVersion + "Packages"}.override {
-        overrides = self: super: {
-          # setproctitle tests segfault on macOS during fork tests
-          # See: https://github.com/dvarrazzo/py-setproctitle/issues/133
-          setproctitle = super.setproctitle.overridePythonAttrs (old: {
-            doCheck = false;
-            checkPhase = "true";
-          });
-        };
-      };
-      skipTests = { doCheck = false; checkPhase = "true"; checkInputs = []; };
-      pyCommon = skipTests // {
-        format = "pyproject";
-        # Chill out re dependency versions
-        pythonRelaxDeps = true; nativeBuildInputs = with pyPkgs; [ pythonRelaxDepsHook ];
-      };
+      nixlib = nixpkgs.lib;
       pkgs = import nixpkgs { inherit system; };
-      noCheck = drv: drv.overridePythonAttrs (old: skipTests // old);
+      python = pkgs.python312;
 
       fenixPkgs = fenix.packages.${system};
       rustTools = with fenixPkgs; combine [
@@ -42,97 +41,72 @@
 
     in rec {
 
-      lib = {
+      lib = rec {
+
+        mkUvPyTool = {
+          pname,
+          url,
+          commitHash,
+          src ? null,
+          sourcePreference ? "wheel",
+        }: let
+          effectiveSrc = if src != null then src else builtins.fetchGit {
+            inherit url;
+            rev = commitHash;
+            allRefs = true;
+          };
+          workspace = uv2nix.lib.workspace.loadWorkspace {
+            workspaceRoot = effectiveSrc;
+          };
+          overlay = workspace.mkPyprojectOverlay {
+            inherit sourcePreference;
+          };
+          pythonSet = (pkgs.callPackage pyproject-nix.build.packages {
+            inherit python;
+          }).overrideScope (
+            nixlib.composeManyExtensions [
+              pyproject-build-systems.overlays.default
+              overlay
+            ]
+          );
+          venv = pythonSet.mkVirtualEnv "${pname}-env" workspace.deps.default;
+        in pkgs.symlinkJoin {
+          name = pname;
+          paths = [ venv ];
+        };
 
         mkSolcSelect = {
           # latest commit from https://github.com/crytic/solc-select/commits/dev/
           commitHash ? "edcbd33b2640366b6358a99e53436089299170e8",
-          # latest version from https://github.com/crytic/solc-select/releases
-          version ? "1.2.0",
           src ? null,
-        }: pyPkgs.buildPythonPackage (pyCommon // {
+        }: mkUvPyTool {
           pname = "solc-select";
-          inherit version;
-          src = if src != null then src else builtins.fetchGit {
-            url = "https://github.com/crytic/solc-select";
-            rev = commitHash;
-            allRefs = true;
-          };
-          propagatedBuildInputs = with pyPkgs; [
-            packaging
-            pycryptodome
-            requests
-            setuptools
-          ];
-        });
+          url = "https://github.com/crytic/solc-select";
+          inherit commitHash src;
+        };
 
         mkCryticCompile = {
           # latest commit from https://github.com/crytic/crytic-compile/commits/master/
           commitHash ? "19934aa5b10837590b4ee1396a9266d0abd3ed8a",
-          # latest version from https://github.com/crytic/crytic-compile/releases
-          version ? "0.3.11",
           src ? null,
           solc-select ? packages.solc-select,
-        }: pyPkgs.buildPythonPackage (pyCommon // {
+        }: mkUvPyTool {
           pname = "crytic-compile";
-          inherit version;
-          src = if src != null then src else builtins.fetchGit {
-            url = "https://github.com/crytic/crytic-compile";
-            rev = commitHash;
-            allRefs = true;
-          };
-          nativeBuildInputs = (pyCommon.nativeBuildInputs or []) ++ (with pyPkgs; [
-            uv-build
-          ]);
-          propagatedBuildInputs = with pyPkgs; [
-            solc-select
-            cbor2
-            pycryptodome
-            setuptools
-            toml
-          ];
-        });
+          url = "https://github.com/crytic/crytic-compile";
+          inherit commitHash src;
+        };
 
         mkSlither = {
           # latest release tag from https://github.com/crytic/slither/releases
           commitHash ? "3b6811f0e0b2a3107d4a3938dd67f300b72f472c",
-          # latest version from https://github.com/crytic/slither/releases
-          version ? "0.11.5",
           src ? null,
           solc-select ? packages.solc-select,
           crytic-compile ? packages.crytic-compile,
-        }: pyPkgs.buildPythonPackage (pyCommon // {
+        }: mkUvPyTool {
           pname = "slither";
-          inherit version;
-          src = if src != null then src else builtins.fetchGit {
-            url = "https://github.com/crytic/slither";
-            rev = commitHash;
-            allRefs = true;
-          };
-          nativeBuildInputs = (pyCommon.nativeBuildInputs or []) ++ (with pyPkgs; [
-            hatchling
-          ]);
-          propagatedBuildInputs = with pyPkgs; [
-            solc-select
-            crytic-compile
-            deepdiff
-            eth-abi
-            eth-typing
-            eth-utils
-            numpy
-            packaging
-            prettytable
-            pycryptodome
-            pytest
-            pytest-cov
-            setuptools
-            web3
-          ];
-          postPatch = ''
-            echo "openai dependency is bugged, removing it from the listed deps"
-            sed -i 's/"openai",//' pyproject.toml
-          '';
-        });
+          url = "https://github.com/crytic/slither";
+          inherit commitHash src;
+        };
 
         mkCloudexec = {
           # latest commit from https://github.com/crytic/cloudexec/commits/main/
@@ -321,18 +295,21 @@
         vscode = lib.mkVscode {};
       };
 
-      apps = {
-        cloudexec = { program = "${packages.cloudexec}/bin/cloudexec"; type = "app"; };
-        crytic-compile = { program = "${packages.crytic-compile}/bin/crytic-compile"; type = "app"; };
-        echidna = { program = "${packages.echidna}/bin/echidna"; type = "app"; };
-        medusa = { program = "${packages.medusa}/bin/medusa"; type = "app"; };
-        mewt = { program = "${packages.mewt}/bin/mewt"; type = "app"; };
-        muton = { program = "${packages.muton}/bin/muton"; type = "app"; };
-        necessist = { program = "${packages.necessist}/bin/necessist"; type = "app"; };
-        roundme = { program = "${packages.roundme}/bin/roundme"; type = "app"; };
-        slither = { program = "${packages.slither}/bin/slither"; type = "app"; };
-        solc-select = { program = "${packages.solc-select}/bin/solc-select"; type = "app"; };
-        vscode = { program = "${packages.vscode}/bin/vscode"; type = "app"; };
+      apps = nixlib.mapAttrs (name: bin: {
+        program = "${packages.${name}}/bin/${bin}";
+        type = "app";
+      }) {
+        cloudexec = "cloudexec";
+        crytic-compile = "crytic-compile";
+        echidna = "echidna";
+        medusa = "medusa";
+        mewt = "mewt";
+        muton = "muton";
+        necessist = "necessist";
+        roundme = "roundme";
+        slither = "slither";
+        solc-select = "solc-select";
+        vscode = "vscode";
       };
 
       devShells.default = pkgs.mkShell {

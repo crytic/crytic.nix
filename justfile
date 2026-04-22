@@ -1,5 +1,6 @@
 
-default_branch := "dev"
+########################################
+## Build
 
 build tool="slither":
   nix build .#{{tool}}
@@ -17,20 +18,23 @@ build-all:
   just build roundme
   just build vscode
 
-install tool="slither":
-  just build {{tool}}
-  echo nix profile remove $(nix profile list | grep {{tool}} | cut -d " " -f 1)
-  nix profile remove $(nix profile list | grep {{tool}} | cut -d " " -f 1)
-  echo nix profile install ./result
-  nix profile install ./result
+########################################
+## Update
 
-uninstall tool="slither":
-  echo nix profile remove $(nix profile list | grep {{tool}} | cut -d " " -f 1) # BEWARE: fragile
-  nix profile remove $(nix profile list | grep {{tool}} | cut -d " " -f 1)
-
-reinstall tool="slither":
-  just uninstall {{tool}}
-  just install {{tool}}
+update-check:
+  python3 scripts/update_tool_pins.py --check
 
 update:
   python3 scripts/update_tool_pins.py --apply --verify
+
+########################################
+## Install
+
+install tool="slither":
+  nix profile add .#{{tool}}
+
+upgrade tool="slither":
+  nix profile upgrade {{tool}}
+
+uninstall tool="slither":
+  nix profile remove {{tool}}
