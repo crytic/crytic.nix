@@ -6,17 +6,17 @@ build tool="slither":
   nix build .#{{tool}}
 
 build-all:
-  just build solc-select
-  just build crytic-compile
-  just build slither
   just build cloudexec
+  just build code
+  just build crytic-compile
   just build echidna
   just build medusa
   just build mewt
   just build muton
   just build necessist
   just build roundme
-  just build vscode
+  just build slither
+  just build solc-select
 
 ########################################
 ## Update

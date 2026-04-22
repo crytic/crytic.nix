@@ -6,6 +6,7 @@
     utils.url = "github:numtide/flake-utils";
     fenix.url = "github:nix-community/fenix";
     fenix.inputs.nixpkgs.follows = "nixpkgs";
+    crane.url = "github:ipetkov/crane";
 
     # Keep these aligned with tob.nix so downstream flakes can share the same
     # uv/pyproject packaging stack without redeclaring pins.
@@ -38,17 +39,20 @@
         fenixPkgs.targets.x86_64-unknown-linux-gnu.stable.rust-std
         fenixPkgs.targets.aarch64-unknown-linux-gnu.stable.rust-std
       ];
+      craneLib = (crane.mkLib pkgs).overrideToolchain (_: rustTools);
 
     in rec {
 
       lib = rec {
 
-        mkUvPyTool = {
+        mkUvTool = {
           pname,
           url,
           commitHash,
           src ? null,
           sourcePreference ? "wheel",
+          extraPaths ? [],
+          venvName ? "${pname}-env",
         }: let
           effectiveSrc = if src != null then src else builtins.fetchGit {
             inherit url;
@@ -69,17 +73,17 @@
               overlay
             ]
           );
-          venv = pythonSet.mkVirtualEnv "${pname}-env" workspace.deps.default;
+          venv = pythonSet.mkVirtualEnv venvName workspace.deps.default;
         in pkgs.symlinkJoin {
           name = pname;
-          paths = [ venv ];
+          paths = [ venv ] ++ extraPaths;
         };
 
         mkSolcSelect = {
           # latest commit from https://github.com/crytic/solc-select/commits/dev/
           commitHash ? "edcbd33b2640366b6358a99e53436089299170e8",
           src ? null,
-        }: mkUvPyTool {
+        }: mkUvTool {
           pname = "solc-select";
           url = "https://github.com/crytic/solc-select";
           inherit commitHash src;
@@ -89,8 +93,7 @@
           # latest commit from https://github.com/crytic/crytic-compile/commits/master/
           commitHash ? "19934aa5b10837590b4ee1396a9266d0abd3ed8a",
           src ? null,
-          solc-select ? packages.solc-select,
-        }: mkUvPyTool {
+        }: mkUvTool {
           pname = "crytic-compile";
           url = "https://github.com/crytic/crytic-compile";
           inherit commitHash src;
@@ -100,9 +103,7 @@
           # latest release tag from https://github.com/crytic/slither/releases
           commitHash ? "3b6811f0e0b2a3107d4a3938dd67f300b72f472c",
           src ? null,
-          solc-select ? packages.solc-select,
-          crytic-compile ? packages.crytic-compile,
-        }: mkUvPyTool {
+        }: mkUvTool {
           pname = "slither";
           url = "https://github.com/crytic/slither";
           inherit commitHash src;
@@ -162,7 +163,6 @@
         mkEchidna = {
           # latest release tag from https://github.com/crytic/echidna/releases
           commitHash ? "7cbb32f3ff558d8e0b6e249c199831915c971d76",
-          # version set by upstream flake.nix
         }: (
           builtins.getFlake "github:crytic/echidna/${commitHash}"
         ).packages.${system}.echidna;
@@ -170,8 +170,6 @@
         mkMewt = {
           # latest release tag from https://github.com/trailofbits/mewt/releases
           commitHash ? "e545284d2d8914f83d40b67882ed104ae073c555",
-          # latest version from https://github.com/trailofbits/mewt/releases
-          version ? "3.1.0",
         }: (
           builtins.getFlake "github:trailofbits/mewt/${commitHash}"
         ).packages.${system}.mewt;
@@ -179,8 +177,6 @@
         mkMuton = {
           # latest release tag from https://github.com/trailofbits/muton/releases
           commitHash ? "00b4aca72b7cc81f0961b0a9536109342410294f",
-          # latest version from https://github.com/trailofbits/muton/releases
-          version ? "3.1.0",
         }: (
           builtins.getFlake "github:trailofbits/muton/${commitHash}"
         ).packages.${system}.muton;
@@ -197,27 +193,29 @@
             rev = commitHash;
             allRefs = true;
           };
-        in pkgs.rustPlatform.buildRustPackage {
-          pname = "necessist";
-          inherit version;
-          src = effectiveSrc;
-          cargoBuildFlags = "-p necessist";
-          cargoLock = {
-            lockFile = "${effectiveSrc}/Cargo.lock";
+          commonArgs = {
+            pname = "necessist";
+            inherit version;
+            src = effectiveSrc;
+            strictDeps = true;
+            nativeBuildInputs = with pkgs; [
+              pkg-config
+            ];
+            buildInputs = with pkgs; [
+              openssl
+              sqlite
+              curl
+            ];
+            OPENSSL_NO_VENDOR = 1;
+            PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
           };
-          nativeBuildInputs = with pkgs; [
-            rustTools
-            pkg-config
-          ];
-          buildInputs = with pkgs; [
-            openssl
-            sqlite
-            curl
-          ];
-          OPENSSL_NO_VENDOR = 1;
-          PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
+          cargoArtifacts = craneLib.buildDepsOnly commonArgs;
+        in craneLib.buildPackage (commonArgs // {
+          pname = "necessist";
+          inherit version cargoArtifacts;
+          cargoExtraArgs = "-p necessist";
           doCheck = false;
-        };
+        });
 
         mkRoundme = {
           # latest commit from https://github.com/crytic/roundme/commits/main/
@@ -231,23 +229,33 @@
             rev = commitHash;
             allRefs = true;
           };
-        in pkgs.rustPlatform.buildRustPackage {
-          pname = "roundme";
-          inherit version;
-          src = effectiveSrc;
-          cargoBuildFlags = "-p roundme";
-          cargoLock = {
-            lockFile = "${effectiveSrc}/Cargo.lock";
+          # roundme currently pins time=0.3.30, which fails to compile on rust >= 1.80.
+          # Keep a compatible compiler here until upstream updates Cargo.lock.
+          roundmeCraneLib = (crane.mkLib pkgs).overrideToolchain (_:
+            (fenixPkgs.toolchainOf {
+              channel = "1.79";
+              sha256 = "sha256-Ngiz76YP4HTY75GGdH2P+APE/DEIx2R/Dn+BwwOyzZU=";
+            }).completeToolchain
+          );
+          commonArgs = {
+            pname = "roundme";
+            inherit version;
+            src = effectiveSrc;
+            strictDeps = true;
+            nativeBuildInputs = with pkgs; [
+              pkg-config
+            ];
+            PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
           };
-          nativeBuildInputs = with pkgs; [
-            rustTools
-            pkg-config
-          ];
-          PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
+          cargoArtifacts = roundmeCraneLib.buildDepsOnly commonArgs;
+        in roundmeCraneLib.buildPackage (commonArgs // {
+          pname = "roundme";
+          inherit version cargoArtifacts;
+          cargoExtraArgs = "-p roundme";
           doCheck = false;
-        };
+        });
 
-        mkVscode = {
+        mkCode = {
           extensions ? [],
         }: pkgs.vscode-with-extensions.override {
           vscode = pkgs.vscodium;
@@ -283,6 +291,7 @@
 
       packages = {
         cloudexec = lib.mkCloudexec {};
+        code = lib.mkCode {};
         crytic-compile = lib.mkCryticCompile {};
         echidna = lib.mkEchidna {};
         medusa = lib.mkMedusa {};
@@ -292,31 +301,32 @@
         roundme = lib.mkRoundme {};
         slither = lib.mkSlither {};
         solc-select = lib.mkSolcSelect {};
-        vscode = lib.mkVscode {};
       };
 
-      apps = nixlib.mapAttrs (name: bin: {
-        program = "${packages.${name}}/bin/${bin}";
+      apps = nixlib.mapAttrs (_name: pkg: {
+        program = nixlib.getExe pkg;
         type = "app";
       }) {
-        cloudexec = "cloudexec";
-        crytic-compile = "crytic-compile";
-        echidna = "echidna";
-        medusa = "medusa";
-        mewt = "mewt";
-        muton = "muton";
-        necessist = "necessist";
-        roundme = "roundme";
-        slither = "slither";
-        solc-select = "solc-select";
-        vscode = "vscode";
+        inherit (packages)
+          cloudexec
+          code
+          crytic-compile
+          echidna
+          medusa
+          mewt
+          muton
+          necessist
+          roundme
+          slither
+          solc-select
+          ;
       };
 
       devShells.default = pkgs.mkShell {
         packages = with pkgs; [
-          python3
           git
           just
+          python3
         ];
       };
 
